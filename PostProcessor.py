@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import copy
 from collections import defaultdict
+from numpy import unicode
 
 import itertools
 
@@ -8,6 +9,8 @@ __author__ = 'Shaun Rong'
 __version__ = '0.1'
 __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
+
+
 
 
 class PostProcessor(object):

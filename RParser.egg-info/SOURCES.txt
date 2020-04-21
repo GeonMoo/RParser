@@ -1,3 +1,4 @@
+README.md
 setup.py
 RParser.egg-info/PKG-INFO
 RParser.egg-info/SOURCES.txt
@@ -8,11 +9,19 @@ RParser.egg-info/top_level.txt
 evaluation_scripts/RParse_predict.py
 evaluation_scripts/__init__.py
 evaluation_scripts/evaluate_action_verbs.py
+evaluation_scripts/evaluate_ioput_arg.py
+evaluation_scripts/evaluate_ioput_baseline.py
 evaluation_scripts/evaluate_method_arg.py
+evaluation_scripts/ioput_baseline_predict.py
 misc/RPrase_predict_folder.py
 misc/__init__.py
 misc/construct_txt_to_raw.py
+misc/convert_RParse_to_gold.py
+misc/data_split_input_output_arg.py
+misc/ioput_baseline_predict_folder.py
 scratch/__init__.py
 scratch/scratch.py
 scratch/scratch2.py
 scratch/scratch3.py
+scratch/scratch4.py
+scratch/scratch5.py

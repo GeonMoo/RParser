@@ -3,15 +3,19 @@ import copy
 import os
 from collections import defaultdict
 
-import cPickle
+# import cPickle
+import _pickle as cPickle
 import nltk
 import yaml
+from numpy import unicode
 from nltk.parse import stanford
 
 __author__ = 'Shaun Rong'
 __version__ = '0.1'
 __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
+
+
 
 
 class RParser(object):
@@ -188,7 +192,7 @@ class RParser(object):
         while type(tree[tuple(pointer)]) != unicode:
             pointer.append(0)
         if tree[tuple(pointer)] != word:
-            print word, pointer, tree[tuple(pointer)]
+            print(word, pointer, tree[tuple(pointer)])
             raise ValueError('pointer does not match word')
 
         representation[word, idx] = copy.copy(pointer)

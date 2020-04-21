@@ -1,4 +1,6 @@
 #your stanford parser
-stanford_parser_folder: '/Users/Shaun/Documents/PhD_Course/6.806_NLP/project/RParser/resources/stanford_parser'
+#stanford_parser_folder: '/Users/Shaun/Documents/PhD_Course/6.806_NLP/project/RParser/resources/stanford_parser'
+stanford_parser_folder: 'E:\\Projects\\tools\\stanford-parser'
 #path for englishPCFG.ser.gz model
-model_path: '/Users/Shaun/Documents/PhD_Course/6.806_NLP/project/RParser/resources/stanford_parser/englishPCFG.ser.gz'
+#model_path: '/Users/Shaun/Documents/PhD_Course/6.806_NLP/project/RParser/resources/stanford_parser/englishPCFG.ser.gz'
+model_path: 'E:\\Projects\\tools\\stanford-parser\\englishPCFG.ser.gz'

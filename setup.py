@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 __author__ = 'Shaun Rong'
-__version__ = '0.1'
-__maintainer__ = 'Shaun Rong'
+__version__ = '0.2'
+__maintainer__ = 'Geon Mo'
 __email__ = 'rongzq08@gmail.com'
 
 

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import importlib
 import sys
 from nltk import word_tokenize
 
@@ -11,11 +12,13 @@ __version__ = '0.1'
 __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
 
+from numpy.core import unicode
+
 
 class PreProcessor(object):
     def __init__(self):
-        reload(sys)
-        sys.setdefaultencoding('utf8')
+        importlib.reload(sys)
+        # sys.setdefaultencoding('utf8')
         self._sub_table = {}
         self._process_text = []
         self._original_text = None
@@ -103,7 +106,7 @@ class PreProcessor(object):
 
 if __name__ == '__main__':
     pp = PreProcessor()
-    with open('data/1.raw.txt', 'r') as f:
+    with open('data\\input_output_arg\\train\\1.raw.txt', 'r', encoding='UTF-8') as f:
         text = f.read().splitlines()
     """
     text = ['Separately, 0.02 mol of Mn(NO3)2·4H2O was dissolved in 50 mL of water to form a clear solution (A).',
@@ -114,8 +117,8 @@ if __name__ == '__main__':
             'The slurry was centrifuged and washed with distilled water and methanol several times to separate the solids.',
             'The solid samples were dried in a vacuum oven at 40 °C overnight.']
     """
-    print text[0]
+    print(text[0])
 
     process_text, chem_table = pp.process([text[0]])
 
-    print process_text
+    print(process_text)
