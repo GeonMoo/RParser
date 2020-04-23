@@ -6,7 +6,6 @@ import importlib
 import sys
 from nltk import word_tokenize
 
-
 __author__ = 'Shaun Rong'
 __version__ = '0.1'
 __maintainer__ = 'Shaun Rong'
@@ -49,9 +48,9 @@ class PreProcessor(object):
             new_sen = []
             split_word = []
             for word in sen:
-                #debug
-                #print word
-                #debug
+                # debug
+                # print word
+                # debug
                 if word[-1] == ',' or word[-1] == '.':
                     split_word.append(word)
 
@@ -87,8 +86,8 @@ class PreProcessor(object):
             for e in self._elements:
                 if e in t:
                     contain_element = True
-            #if t == '(' or t == ')':
-                #contain_element = True
+            # if t == '(' or t == ')':
+            # contain_element = True
             if contain_element:
                 token_with_elements += 1
         if token_with_elements / float(len(token)) > 0.3:
@@ -96,7 +95,9 @@ class PreProcessor(object):
         else:
             return False
 
-    def _is_number_range(self, word):
+    @staticmethod
+    # def _is_number_range(self, word):
+    def _is_number_range(word):
         w_list = word.split(u'\u2212')
         if len(w_list) > 1:
             if w_list[0].isdigit() and w_list[1].isdigit():
@@ -107,18 +108,16 @@ class PreProcessor(object):
 if __name__ == '__main__':
     pp = PreProcessor()
     with open('data\\input_output_arg\\train\\1.raw.txt', 'r', encoding='UTF-8') as f:
-        text = f.read().splitlines()
-    """
-    text = ['Separately, 0.02 mol of Mn(NO3)2·4H2O was dissolved in 50 mL of water to form a clear solution (A).',
-            'A total of 0.02 mol of (NH4)2HPO4 and 20 g of Na2CO3 were dissolved in 100 mL of water to form a clear solution (B).',
-            'Solution A was then quickly added to solution B under fast magnetic stirring.',
-            'The obtained slurry was then transferred to a glass bottle sealed with a cap.',
-            'The bottle was heated in a 120 °C oil bath in an Ar flushed glovebox for 4−72 h, after which it was taken out of the oil bath and slowly cooled down to room temperature.',
-            'The slurry was centrifuged and washed with distilled water and methanol several times to separate the solids.',
-            'The solid samples were dried in a vacuum oven at 40 °C overnight.']
-    """
-    print(text[0])
+        text_in = f.read().splitlines()
+    """text = ['Separately, 0.02 mol of Mn(NO3)2·4H2O was dissolved in 50 mL of water to form a clear solution (A).', 
+    'A total of 0.02 mol of (NH4)2HPO4 and 20 g of Na2CO3 were dissolved in 100 mL of water to form a clear solution 
+    (B).', 'Solution A was then quickly added to solution B under fast magnetic stirring.', 'The obtained slurry was 
+    then transferred to a glass bottle sealed with a cap.', 'The bottle was heated in a 120 °C oil bath in an Ar 
+    flushed glovebox for 4−72 h, after which it was taken out of the oil bath and slowly cooled down to room 
+    temperature.', 'The slurry was centrifuged and washed with distilled water and methanol several times to separate 
+    the solids.', 'The solid samples were dried in a vacuum oven at 40 °C overnight.'] """
+    print(text_in[0])
 
-    process_text, chem_table = pp.process([text[0]])
+    process_text, chem_table = pp.process([text_in[0]])
 
     print(process_text)

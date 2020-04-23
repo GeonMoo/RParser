@@ -23,4 +23,4 @@ rp = RParser()
 
 NPs = rp.return_NPs(sen)
 
-print NPs
+print(NPs)

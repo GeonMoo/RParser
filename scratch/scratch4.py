@@ -6,7 +6,7 @@ __version__ = '0.1'
 __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
 
-
+# Test yaml output
 a = {'key': 'I love you'}
 
 with open('test.yaml', 'w') as f:

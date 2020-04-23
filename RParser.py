@@ -3,8 +3,8 @@ import copy
 import os
 from collections import defaultdict
 
-# import cPickle
-import _pickle as cPickle
+# import cPickle # Python 2.7
+import pickle  # Python 3.7
 import nltk
 import yaml
 from numpy import unicode
@@ -16,6 +16,20 @@ __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
 
 
+def _find_right_word(word, idx, pointer, representation, tree):
+    last_element = pointer.pop()
+    while last_element == (len(tree[tuple(pointer)]) - 1):
+        last_element = pointer.pop()
+    pointer.append(last_element + 1)
+    while type(tree[tuple(pointer)]) != unicode:
+        pointer.append(0)
+    if tree[tuple(pointer)] != word:
+        print(word, pointer, tree[tuple(pointer)])
+        raise ValueError('pointer does not match word')
+
+    representation[word, idx] = copy.copy(pointer)
+
+    return pointer, representation
 
 
 class RParser(object):
@@ -28,11 +42,11 @@ class RParser(object):
         os.environ['STANFORD_PARSER'] = stanford_parser_folder
         os.environ['STANFORD_MODELS'] = stanford_parser_folder
 
-        with open(os.path.join(root_folder, 'ioput_maxent_classifier.pickle'), 'r') as f:
-            self._maxent_classifier = cPickle.loads(f.read())
+        with open(os.path.join(root_folder, 'ioput_maxent_classifier.pickle'), 'rb') as f:  # Change r to rb for pickle
+            self._maxent_classifier = pickle.loads(f.read())
 
-        self._tree_parser = stanford.StanfordParser(model_path=env['model_path'])
-        self._dependency_parser = stanford.StanfordDependencyParser(model_path=env['model_path'])
+        self._tree_parser = stanford.StanfordParser(model_path=env['model_path'])  # Deprecated warning
+        self._dependency_parser = stanford.StanfordDependencyParser(model_path=env['model_path'])  # Deprecated warning
 
         self._NPs = []
 
@@ -54,7 +68,7 @@ class RParser(object):
         sen = root_tree[0].leaves()
         dfs_repr = self.build_dfs_repr(sen, root_tree)
 
-        #Find Action Verbs
+        # Find Action Verbs
         lowest_verb_height = root_tree.height()
 
         for i, token in enumerate(sen):
@@ -79,8 +93,9 @@ class RParser(object):
                 verb_node.pop()
                 verb_parent[tuple(verb_node)].append(v)
 
-            #Find method arguments associated with action verbs
-            for k, v in verb_parent.iteritems():
+            # Find method arguments associated with action verbs
+            # for k, v in verb_parent.iteritems():
+            for k, v in verb_parent.items():
                 for child_phrase in root_tree[tuple(k)]:
                     if child_phrase.label() == 'PP' or child_phrase.label() == 'ADVP' or child_phrase.label() == 'RB':
                         method_phrase = child_phrase.leaves()
@@ -88,11 +103,12 @@ class RParser(object):
 
             dependency_parse = self._dependency_parser.raw_parse(ori_sen)
 
-            for k, v in verb_parent.iteritems():
+            # for k, v in verb_parent.iteritems():
+            for k, v in verb_parent.items():
                 for verb in v:
                     for p in dependency_parse:
                         for t in p.triples():
-                            if t[0][0] == unicode(verb[0]) and t[0][1] == unicode('VBN') and t[1] == unicode('xcomp')\
+                            if t[0][0] == unicode(verb[0]) and t[0][1] == unicode('VBN') and t[1] == unicode('xcomp') \
                                     and t[2][1] == unicode('VBG') and t[2][0] != unicode('then'):
                                 associate_word_list = []
                                 for k_word in dfs_repr.keys():
@@ -116,10 +132,12 @@ class RParser(object):
             return []
         else:
             method_phrases = []
-            for key, values in method_parent.iteritems():
+            # for key, values in method_parent.iteritems():
+            for key, values in method_parent.items():
                 method_phrases += values
             verb_phrases = []
-            for key, values in verb_parent.iteritems():
+            # for key, values in verb_parent.iteritems():
+            for key, values in verb_parent.items():
                 for verb in values:
                     verb_phrases += [verb[0]]
 
@@ -128,6 +146,7 @@ class RParser(object):
 
             NPs = self.return_NPs(sen)
 
+            final_ioput_NP = []
             for NP in NPs:
                 in_method_phrase = False
                 for method_p in method_phrases:
@@ -137,7 +156,7 @@ class RParser(object):
                     feats = self._maxent_unigram_feats(NP)
                     tag = self._maxent_classifier.classify(feats)
                     if tag == 'input_output':
-                        #print NP, tag
+                        # print NP, tag
                         return_ioput_NP.append(NP)
                 final_ioput_NP = []
                 for np in return_ioput_NP:
@@ -145,12 +164,12 @@ class RParser(object):
                     for other_np in return_ioput_NP:
                         if np != other_np and (np in other_np):
                             sub_string = True
-                    #debug
-                    #print verb_phrases
-                    #print method_phrases
-                    #debug
+                    # debug
+                    # print verb_phrases
+                    # print method_phrases
+                    # debug
                     for v_p in verb_phrases:
-                        #print v_p
+                        # print v_p
                         if v_p in np:
                             sub_string = True
                     for m_p in method_phrases:
@@ -161,8 +180,8 @@ class RParser(object):
             return final_ioput_NP
 
     def return_NPs(self, sen):
-        ori_sen = copy.copy(sen)
-        verb = []
+        # ori_sen = copy.copy(sen)
+        # verb = []
 
         parsed_sen = self._tree_parser.raw_parse(sen)
         root_tree = parsed_sen.next()
@@ -171,7 +190,9 @@ class RParser(object):
 
         return self._NPs
 
-    def build_dfs_repr(self, sen, tree):
+    @staticmethod
+    # def build_dfs_repr(self, sen, tree):
+    def build_dfs_repr(sen, tree):
         representation = {}
         pointer = [0]
         while type(tree[tuple(pointer)]) != unicode:
@@ -180,24 +201,9 @@ class RParser(object):
             raise ValueError('leftest pointer does not point to first work in the root tree')
         representation[sen[0], 0] = pointer
         for i in range(1, len(sen)):
-            pointer, representation = self._find_right_word(sen[i], i, pointer, representation, tree)
+            pointer, representation = _find_right_word(sen[i], i, pointer, representation, tree)
 
         return representation
-
-    def _find_right_word(self, word, idx, pointer, representation, tree):
-        last_element = pointer.pop()
-        while last_element == (len(tree[tuple(pointer)]) - 1):
-            last_element = pointer.pop()
-        pointer.append(last_element + 1)
-        while type(tree[tuple(pointer)]) != unicode:
-            pointer.append(0)
-        if tree[tuple(pointer)] != word:
-            print(word, pointer, tree[tuple(pointer)])
-            raise ValueError('pointer does not match word')
-
-        representation[word, idx] = copy.copy(pointer)
-
-        return pointer, representation
 
     @staticmethod
     def _find_associate_vbg(associate_word_list, verb):
@@ -215,7 +221,9 @@ class RParser(object):
             else:
                 pass
 
-    def _maxent_unigram_feats(self, NP):
+    @staticmethod
+    # def _maxent_unigram_feats(self, NP):
+    def _maxent_unigram_feats(NP):
         feats = []
         sentences = nltk.sent_tokenize(NP)
         for sen in sentences:

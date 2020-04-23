@@ -11,8 +11,6 @@ __maintainer__ = 'Shaun Rong'
 __email__ = 'rongzq08@gmail.com'
 
 
-
-
 class PostProcessor(object):
     def __init__(self, verb_parent, method_parent, ioput, original_text, sub_table):
         self._verb_parent = verb_parent
@@ -21,7 +19,8 @@ class PostProcessor(object):
         self._original_text = original_text
         self._sub_table = sub_table
         self._reverse_sub_table = defaultdict(lambda: [])
-        for word, sub in self._sub_table.iteritems():
+        # for word, sub in self._sub_table.iteritems(): # Python 2.7
+        for word, sub in self._sub_table.items():
             self._reverse_sub_table[sub].append(word)
 
     def process(self):
@@ -34,18 +33,18 @@ class PostProcessor(object):
             verb_node_keys = self._verb_parent.keys()
             verb_node_keys = self._sort_keys(verb_node_keys)
             for i in range(action_num):
-                summary['action{}'.format(i+1)] = {}
+                summary['action{}'.format(i + 1)] = {}
                 v = ""
                 for v_pos in self._verb_parent[verb_node_keys[i]]:
                     v += v_pos[0]
                     v += ', '
                 v = v[:-2]
-                summary['action{}'.format(i+1)]['v'] = repr(v)
+                summary['action{}'.format(i + 1)]['v'] = repr(v)
                 method_seq_num = 1
                 io_seq_num = 1
                 for method_phrase in self._method_parent[verb_node_keys[i]]:
                     original_method_phrase = self.find_orig_phrase(method_phrase)
-                    summary['action{}'.format(i+1)]['method{}'.format(method_seq_num)] = repr(original_method_phrase)
+                    summary['action{}'.format(i + 1)]['method{}'.format(method_seq_num)] = repr(original_method_phrase)
                     method_seq_num += 1
                 for np in self._ioput:
                     orig_np = self.find_orig_phrase(np)
@@ -59,7 +58,7 @@ class PostProcessor(object):
             return verb_node_keys
         else:
             for i in range(len(verb_node_keys)):
-                for j in range(i+1, len(verb_node_keys)):
+                for j in range(i + 1, len(verb_node_keys)):
                     self._sort_elements(verb_node_keys, i, j)
             return verb_node_keys
 
@@ -93,6 +92,7 @@ class PostProcessor(object):
                     try:
                         method_phrase_word_list[pos] = sub_comb[i]
                     except:
+                        print("Error. ")
                         pass
                 method_phrase_word_list = self._concat_comma_pierod(method_phrase_word_list)
                 method_phrase_word_list = self._recover_round_brackets(method_phrase_word_list)
@@ -119,7 +119,7 @@ class PostProcessor(object):
             if word == unicode('-RRB-'):
                 word_list[-1] += ')'
             elif word == unicode('-LRB-'):
-                orig_phrase_list[i+1] = '(' + orig_phrase_list[i+1]
+                orig_phrase_list[i + 1] = '(' + orig_phrase_list[i + 1]
             else:
                 word_list.append(word)
         return word_list

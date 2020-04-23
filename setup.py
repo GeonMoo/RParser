@@ -16,5 +16,5 @@ if __name__ == "__main__":
           license="MIT License",
           packages=find_packages(),
           zip_safe=False,
-          classifiers=["Development Status :: 2 - Pre-Alpha", "rogramming Language :: Python :: 2.7",
+          classifiers=["Development Status :: 2 - Pre-Alpha", "rogramming Language :: Python :: 3.7",
                        "Topic :: Scientific/Engineering :: Physics"])
